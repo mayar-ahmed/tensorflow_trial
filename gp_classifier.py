@@ -31,6 +31,9 @@ class Classifier:
         num_class=self.config.num_classes
         lr=self.config.learning_rate
 
+        print("model parameters : ")
+        print("num classes : {} , lr: {} , data_dim: {} ".format(num_class,lr,data_dim))
+
         #data and training flag
         self.x=tf.placeholder(tf.float32, shape=[None]+ data_dim)
         self.y=tf.placeholder(tf.int64,shape=[None])

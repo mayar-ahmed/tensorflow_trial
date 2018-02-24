@@ -1,13 +1,13 @@
 #configuration file
 
 model: Basic
-num_epochs: 20
-batch_size: 256
+num_epochs: 5
+batch_size: 512
 learning_rate: 0.0001
 reg: 0.0
 dropout: 0
 data_dir: 'data/'
-exp_dir: 'experiment_2/'
+exp_dir: 'experiment_1/'
 data_dim: [6]
 num_classes: 4
 test: True

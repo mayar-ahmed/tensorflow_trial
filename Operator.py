@@ -103,12 +103,13 @@ class Operator:
         :return:
         """
         checkpoint_dir = self.config.checkpoint_best_dir
+        print("best checkpoint directory: ", checkpoint_dir)
         print("searching for best checkpoint..")
         latest_chekpoint = tf.train.latest_checkpoint(checkpoint_dir)
 
         if latest_chekpoint:
             print("loading last checkpoint...{} ".format(latest_chekpoint))
-            self.saver.restore(self.sess, latest_chekpoint)
+            self.saver_best.restore(self.sess, latest_chekpoint)
             print("best checkpoint loaded...\n")
         else:
             print("no best checkpoint")
@@ -134,7 +135,7 @@ class Operator:
         best_dir = self.config['checkpoint_best_dir']
 
         print("saving check point..")
-        self.saver.save(self.sess, best_dir, self.model.global_step)
+        self.saver_best.save(self.sess, best_dir, self.model.global_step)
 
         print("saved checkpoint successfully..\n")
 
@@ -179,20 +180,31 @@ class Operator:
 
         start = 0
         new_epoch_flag = True
+
+        print("data length : ", self.train_data['x'].shape[0])
         while True:
 
+
+            train_data_length=self.train_data['x'].shape[0]
+
             if new_epoch_flag:
-                idx = np.random.choice(self.train_iterations_per_epoch, self.train_iterations_per_epoch, replace=False)
+                idx = np.random.choice(train_data_length, train_data_length, replace=False)
                 new_epoch_flag = False
+
+
 
             mask = idx[start:start + self.config.batch_size]
             x_batch = self.train_data['x'][mask]
             y_batch = self.train_data['y'][mask]
 
+            #print("start : ", start, " x_batch sample : ", x_batch[0:1])
+
             start += self.config.batch_size
 
+            #print("x_batxch " , x_batch)
             yield x_batch, y_batch
 
+            #print("start after incrementing : {} , data_boundary :{}  ".format(start,self.train_data['x'].shape[0] ))
             if start >= self.train_data['x'].shape[0]:
                 start = 0
                 new_epoch_flag = True
@@ -226,8 +238,10 @@ class Operator:
             }
 
             loss, acc = self.sess.run([self.model.loss, self.model.accuracy], feed_dict=feed)
-            loss_list += loss
-            acc_list += acc
+            loss_list += [loss]
+            acc_list += [acc]
+
+
 
             if start > self.val_data['x'].shape[0]:
                 break
@@ -280,8 +294,8 @@ class Operator:
             }
 
             loss, acc = self.sess.run([self.model.loss, self.model.accuracy], feed_dict=feed)
-            loss_list += loss
-            acc_list += acc
+            loss_list += [loss]
+            acc_list += [acc]
 
             if start > self.test_data['x'].shape[0]:
                 break
@@ -320,10 +334,12 @@ class Operator:
                     [self.model.train_op, self.model.loss, self.model.accuracy,
                      self.model.merged_summary], feed_dict=feed_dict)
 
-                loss_list += loss
-                acc_list += acc
+                loss_list += [loss]
+                acc_list += [acc]
 
                 cur_it = self.model.global_step.eval(session=self.sess)
+
+                #print("step {} , loss  {} , acc {} ".format(cur_it,loss,acc))
 
                 # add summary per training step
                 self.add_summary(cur_it,None,summaries_merged)

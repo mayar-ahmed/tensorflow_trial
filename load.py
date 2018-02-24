@@ -14,13 +14,13 @@ def load_dataset(data_dir):
     mean=np.mean(x_train,axis=0)
     std=np.std(x_train,axis=0)
 
-    x_train-=mean
-    x_val-=mean
-    x_test-=mean
-
-    x_train/=std
-    x_val/=std
-    x_test/=std
+    # x_train-=mean
+    # x_val-=mean
+    # x_test-=mean
+    #
+    # x_train/=std
+    # x_val/=std
+    # x_test/=std
 
     return (x_train,y_train, x_val, y_val,x_test, y_test)
 
