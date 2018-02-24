@@ -3,7 +3,7 @@
 from Operator import Operator
 from utils import *
 import tensorflow as tf
-from gp_classifier import Classifier
+from model2 import Classifier
 #main file
 
 #read arguments and create directories
