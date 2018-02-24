@@ -1,0 +1,15 @@
+#configuration file
+
+model: Basic
+num_epochs: 20
+batch_size: 256
+learning_rate: 0.0001
+reg: 0.0
+dropout: 0
+data_dir: 'data/'
+exp_dir: 'experiment_2/'
+data_dim: [6]
+num_classes: 4
+test: True
+train: True
+
